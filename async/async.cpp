@@ -11,13 +11,8 @@ using namespace std::chrono;
 using clk = system_clock;
 using namespace std::chrono_literals;
 
-#include <resumable>
-#include <generator>
 using namespace std;
 using namespace std::experimental;
-
-#define co_await __await
-#define co_yield __yield_value
 
 #include <windows.h>
 #include <threadpoolapiset.h>
@@ -80,7 +75,7 @@ struct async_generator
             return _Al.allocate(_Size);
         }
 
-        void operator delete(void* _Ptr, size_t _Size) _NOEXCEPT
+        void operator delete(void* _Ptr, size_t _Size)
         {
             _Alloc_of_char_type _Al;
             return _Al.deallocate(static_cast<char*>(_Ptr), _Size);
@@ -170,12 +165,12 @@ struct await_consumer
     {
     }
 
-    bool await_ready() _NOEXCEPT
+    bool await_ready()
     {
         return false;
     }
 
-    void await_suspend(coroutine_handle<> _AwaitConsumerCoro) _NOEXCEPT
+    void await_suspend(coroutine_handle<> _AwaitConsumerCoro)
     {
         _GeneratorCoro.promise()._AwaitConsumerCoro = _AwaitConsumerCoro;
 
@@ -245,12 +240,12 @@ struct await_iterator
     {
     }
 
-    bool await_ready() _NOEXCEPT
+    bool await_ready()
     {
         return false;
     }
 
-    void await_suspend(coroutine_handle<> _AwaitIteratorCoro) _NOEXCEPT
+    void await_suspend(coroutine_handle<> _AwaitIteratorCoro)
     {
         _GeneratorCoro.promise()._AwaitIteratorCoro = _AwaitIteratorCoro;
 
@@ -268,7 +263,7 @@ struct await_iterator
 
     }
 
-    async_iterator<_Ty, _GeneratorPromise, _Alloc> await_resume() _NOEXCEPT
+    async_iterator<_Ty, _GeneratorPromise, _Alloc> await_resume()
     {
         if (_GeneratorCoro.done() || !_GeneratorCoro.promise()._CurrentValue) {
             _GeneratorCoro = nullptr;
